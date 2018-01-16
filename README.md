@@ -92,7 +92,8 @@ create an EFI partition if using EFI.
     1) systemctl enable --now dhcpcd.service
     
 19) install `nvidia` or `nvidia-dkms`
-    1) add `nvidia-drm.modeset=1 video=vesafb:mtrr:3,ywrap` to kernel parameters to enable KMS and speed up vconsole respectively
-    2) reduce grup resolution to imrove redraw performance.
-    2) add `nvidia nvidia_drm nvidia_uvm nvidia_modeset` to mkinitcpio.conf so the the above works on boot
+    1) add `nvidia-drm.modeset=1 video=vesafb:mtrr:3,ywrap` to kernel parameters in `/etc/defaults/grub` to enable KMS and speed up vconsole respectively
+    2) also consider `GRUB_TERMINAL_OUTPUT=console` if grub renders slowly.
+    3) regenerate grub config after the above steps.
+    4) add `nvidia nvidia_drm nvidia_uvm nvidia_modeset` to mkinitcpio.conf so the the above works on boot
 
