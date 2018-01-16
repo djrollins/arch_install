@@ -71,8 +71,7 @@ create an EFI partition if using EFI.
 
 12) Set root password `passwd`
 
-13) `timedatectl set-timezone Europe/London`
-    13.1) or `ln -sf usr/share/zoneinfo/Europe/London /etc/localtime`
+13) `timedatectl set-timezone Europe/London` **or** `ln -sf usr/share/zoneinfo/Europe/London /etc/localtime`
 
 14) set and generate locales
     1) uncomment `en_GB` in `/etc/locale.gen`
