@@ -77,14 +77,11 @@ create an EFI partition if using EFI.
 14) set and generate locales
     1) uncomment `en_GB` in `/etc/locale.gen`
     2) generate locales `locale-gen`
-    3) `localectl set-locale LANG=en_GB.UTF-8`
-        3.1) or `echo LANG=en_GB.UTF-8 > /etc/locale.conf`
-    4) `localectl set-keymap uk`
-        4.1) or `echo KEYMAP=uk > /etc/vconsole.conf`
+    3) `localectl set-locale LANG=en_GB.UTF-8` **or** `echo LANG=en_GB.UTF-8 > /etc/locale.conf`
+    4) `localectl set-keymap uk` **or** `echo KEYMAP=uk > /etc/vconsole.conf`
     5) `localectl set-x11-keymap gb pc105 "" caps:nocaps`
     
-15) `hostnamectl set-hostname <hostname>`
-    15.1) or `echo <hostname> > /etc/hostname`
+15) `hostnamectl set-hostname <hostname>` **or** `echo <hostname> > /etc/hostname`
 
 16) Add users
     1) `useradd -m -G wheel -c "Daniel J. Rollins" djr`
@@ -95,7 +92,7 @@ create an EFI partition if using EFI.
     2) Uncomment `%wheel ALL=(ALL) ALL`
 
 18) Enable dhcpcd for all network adapters
-    1) systemctl enable --now dhcpcd.service
+    1) `systemctl enable --now dhcpcd.service`
     
 19) install `nvidia` or `nvidia-dkms`
     1) add `nvidia-drm.modeset=1 video=vesafb:mtrr:3,ywrap` to kernel parameters in `/etc/defaults/grub` to enable KMS and speed up vconsole respectively
