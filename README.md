@@ -18,24 +18,27 @@ $ loadkeys uk # most likely.
 $ timedatectl set-ntp true
 ```
 
-3) partition disks if using EFI
+3) partition disks if using EFI (EFY must be formatted as FAT32).
  - `fdisk` if dual booting with windows
- - `gdisk` gtp
- - `cfdisk` for curses interface
+ - `gdisk` for gtp paritional tables
+ - `c{f,g}disk` for curses interface
 
-4) make btrfs file systems
+4) Make btrfs file systems
 
 Creating a btrfs filesystem directly on the raw device doesn't allow for EFI,
 create an EFI partition if using EFI.
 
-    1) `mkfs.btrfs -L "Arch Linux" /dev/sdX`
-    2) `mount -o ... /dev/sd{X,Y} /mnt/btrfs-{home,root}`
+    1) `mkfs.btrfs -L "Arch Linux" /dev/sdXX`
+    2) `mount /dev/sdXX /mnt/btrfs-{home,root}`
     3) `__current` and `__snapshot` directories for each filesystem
     4) `btrfs subvolume create ...`
-        1) `/mnt/btrfs-home/__current/home`
-        2) `/mnt/btrfs-root/__current/ROOT` 
-    5) `mount -o subvol=__current/ROOT /mnt/btrfs_current`
-    6) `mount -o subvol=__current/home /mnt/btrfs_current/home` etc etc etc
+        1) `/mnt/btrfs-home/__current/@home`
+        2) `/mnt/btrfs-root/__current/@`
+        3) `/mnt/btrfs-root/__current/@boot
+    5) `mount -o ...,subvol=__current/@  /dev/sdXX /mnt/btrfs_current`
+    7) `mount -o ...,subvol=__current/@boot /dev/sdXX /mnt/btrfs_current/boot`
+    8) `mount -o ... /dev/sdXX /mnt/btrfs_current/boot/efi`
+    6) `mount -o ...,subvol=__current/@home /dev/sdXX /mnt/btrfs_current/home`
     7) consider other options `-o compress=lzo,discard,ssd,relatime` etc
 
 # Installation
@@ -51,34 +54,37 @@ create an EFI partition if using EFI.
 
 7) `arch-chroot /mnt/btrfs-current`
 
-8) set the timezone `ln -sf /usr/share/zoneinfo/Europe/London /etc/localtime`
+8) set the hardware clock from system clock `hwclock --systohc --utc`
 
-9) set the hardware clock from system clock `hwclock --systohc --utc`
+9) edit `/etc/mkinicpio.conf` and generate initial ramdisk
+    1) edit add `btrfs` to `HOOKS` and install `btrfs-progs`
+    2) generate the ramdisk `mkinicpio -p linux`
 
-10) set and generate locales
-    1) uncomment `en_GB` in `/etc/locale.gen`
-    2) generate locales `locale-gen`
-    3) `localectl set-locale en_GB.UTF-8`
-    4) `localectl set-keymap uk`
-    5) `localectl set-x11-keymap gb pc105 "" caps:nocaps`
-
-11) set hostname `echo <hostname> > /etc/hostname`
-
-12) edit `/etc/mkinicpio.conf` and generate initial ramdisk
-    1) edit add btrfs to HOOKS and isntall `btrfs.progs`
-    2) uncomment compression type and make sure the type is installed
-    3) generate the ramdisk `mkinicpio -p linux`
-
-13) install bootloader and utilities to find windows partition
+10) install bootloader and utilities to find windows partition
     1) `pacman -S grub os-prober ntfs-3g` 
     2) `grub-install /dev/sdX`
     3) `grub-mkconfig -o /boot/grub/grub.cfg`
 
-14) reboot
+11) reboot
 
 # post install
 
-15) Set root password `passwd`
+12) Set root password `passwd`
+
+13) `timedatectl set-timezone Europe/London`
+    13.1) or `ln -sf usr/share/zoneinfo/Europe/London /etc/localtime`
+
+14) set and generate locales
+    1) uncomment `en_GB` in `/etc/locale.gen`
+    2) generate locales `locale-gen`
+    3) `localectl set-locale LANG=en_GB.UTF-8`
+        3.1) or `echo LANG=en_GB.UTF-8 > /etc/locale.conf`
+    4) `localectl set-keymap uk`
+        4.1) or `echo KEYMAP=uk > /etc/vconsole.conf`
+    5) `localectl set-x11-keymap gb pc105 "" caps:nocaps`
+    
+15) `hostnamectl set-hostname <hostname>`
+    15.1) or `echo <hostname> > /etc/hostname`
 
 16) Add users
     1) `useradd -m -G wheel -c "Daniel J. Rollins" djr`
@@ -97,3 +103,6 @@ create an EFI partition if using EFI.
     3) regenerate grub config after the above steps.
     4) add `nvidia nvidia_drm nvidia_uvm nvidia_modeset` to mkinitcpio.conf so the the above works on boot
 
+# Install DE
+
+TODO
