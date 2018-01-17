@@ -50,8 +50,6 @@ create an EFI partition if using EFI.
     2) clean up extraneous options that genfstab generates e.g. `subvolid=` and multiple `subvol=` etc.
     3) for each UUID mount them the `/run/btrfs-root` or `/run/btrfs-home` etc for easy snapshotting
 
-# Configuration
-
 7) `arch-chroot /mnt/btrfs-current`
 
 8) set the hardware clock from system clock `hwclock --systohc --utc`
@@ -67,7 +65,7 @@ create an EFI partition if using EFI.
 
 11) reboot
 
-# post install
+# System Configuration
 
 12) Set root password `passwd`
 
@@ -98,7 +96,26 @@ create an EFI partition if using EFI.
     2) also consider `GRUB_TERMINAL_OUTPUT=console` if grub renders slowly.
     3) regenerate grub config after the above steps.
     4) add `nvidia nvidia_drm nvidia_uvm nvidia_modeset` to mkinitcpio.conf so the the above works on boot
+    5) `nvidia-xconfig -o /etc/X11/50-nvida.conf` (requires xorg-server-devel as well for some reason?)
 
-# Install DE
+# Userland configuration
 
-TODO
+## Base packages
+ * zsh
+ * zsh-completions
+ * git
+ * openssh
+ * gvim (rather than vim for +clipboard when we have  DE)
+
+get dotfiles from git and symlink into $HOME
+
+## Setup DE
+
+1) install packages for basic i3 desktop
+ * xorg-xinit
+ * i3
+ * dmenu
+ * rxvt-unicode (or another terminal so i3-sensible-terminal will actually work!)
+ * feh
+    - `feh --bg-center /path/to/image` to set background
+
